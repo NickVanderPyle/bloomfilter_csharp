@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
 using BloomFilter;
@@ -28,11 +29,11 @@ namespace BloomCli
             if (bloomfilterFile.Exists)
             {
                 var fileBytes = File.ReadAllBytes(bloomfilterFile.FullName);
-                filter = new Filter(fileBytes, 0.05f, 4000);
+                filter = new Filter(fileBytes, 0.05f, 2000000);
             }
             else
             {
-                filter = new Filter(0.05f, 4000);
+                filter = new Filter(0.05f, 2000000);
                 TrainFilter(filter, keyFile);
                 File.WriteAllBytes(bloomfilterFile.FullName, filter.GetBloomFilterBytes());
             }
@@ -48,7 +49,7 @@ namespace BloomCli
 
         private static void TrainFilter(Filter filter, FileInfo keyFile)
         {
-            var pattern = new Regex(@"\b\w{4,}\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var pattern = new Regex(@"\b\w{4,}\b", RegexOptions.Compiled);
             using (var reader = new StreamReader(keyFile.FullName))
             {
                 while (reader.Peek() >= 0)
