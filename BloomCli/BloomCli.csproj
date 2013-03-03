@@ -11,25 +11,31 @@
     <AssemblyName>BloomCli</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Externalconsole>True</Externalconsole>
+    <Commandlineparameters>/Users/nv/Documents/stackoverflow/ users.xml</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Externalconsole>True</Externalconsole>
+    <Commandlineparameters>/Users/nv/Documents/stackoverflow/ users.xml</Commandlineparameters>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -49,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BloomFilter\BloomFilter.csproj">
-      <Project>{45f6bb4c-059a-4b1b-a1a1-fc5ad33b8554}</Project>
+      <Project>{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}</Project>
       <Name>BloomFilter</Name>
     </ProjectReference>
   </ItemGroup>

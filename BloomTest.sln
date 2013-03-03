@@ -5,20 +5,29 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloomCli", "BloomCli\BloomC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloomFilter", "BloomFilter\BloomFilter.csproj", "{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{C7170875-B9E7-4532-BD67-5CE2BBB87E3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45F6BB4C-059A-4B1B-A1A1-FC5AD33B8554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{924F5DF5-3718-43E9-BFDD-8A016306A43C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7170875-B9E7-4532-BD67-5CE2BBB87E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7170875-B9E7-4532-BD67-5CE2BBB87E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7170875-B9E7-4532-BD67-5CE2BBB87E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7170875-B9E7-4532-BD67-5CE2BBB87E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = BloomCli\BloomCli.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

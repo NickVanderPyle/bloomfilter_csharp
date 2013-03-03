@@ -53,7 +53,7 @@ namespace BloomFilter
         private int GetHashCode(byte[] item, int offset)
         {
             //var hashCode = item.GetHashCode();
-            var mm3Hash = new Murmur3((uint)offset);
+            var mm3Hash = new Murmur3_x64((uint)offset);
             mm3Hash.ComputeHash(item);
             var lowerHash = (long)mm3Hash.HashLowerBound;
             var upperHash = (long)mm3Hash.HashUpperBound;
