@@ -36,3 +36,4 @@ TestResults/
 *.resharper
 *.opensdf
 *.sdf
+*.userprefs
