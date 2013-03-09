@@ -7,7 +7,7 @@ namespace BloomFilter
     public class Filter
     {
         private readonly int _numberOfHashes;
-        private readonly BitArray _filterBits;
+        private readonly BitArray2 _filterBits;
 
         public Filter(float falsePositiveRate, int estimatedNumberOfElements)
         {
@@ -15,7 +15,7 @@ namespace BloomFilter
             _numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, optimalFilterSize);
             Console.WriteLine("Optimal Filter Size: {0}/tOptimal Number Of Hashes: {1}", optimalFilterSize, _numberOfHashes);
 
-            _filterBits = new BitArray(optimalFilterSize);
+            _filterBits = new BitArray2(optimalFilterSize);
         }
 
         public Filter(byte[] existingBloomFilter, float falsePositiveRate, int estimatedNumberOfElements)
@@ -24,7 +24,7 @@ namespace BloomFilter
             _numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, optimalFilterSize);
             Console.WriteLine("Optimal Filter Size: {0}/tOptimal Number Of Hashes: {1}", optimalFilterSize, _numberOfHashes);
 
-            _filterBits = new BitArray(existingBloomFilter);
+            _filterBits = new BitArray2(existingBloomFilter);
         }
 
         public void Add(byte[] item)
@@ -53,20 +53,21 @@ namespace BloomFilter
         private int GetHashCode(byte[] item, int offset)
         {
             //var hashCode = item.GetHashCode();
-            var mm3Hash = new Murmur3_x64((uint)offset);
-            mm3Hash.ComputeHash(item);
-            var lowerHash = (long)mm3Hash.HashLowerBound;
-            var upperHash = (long)mm3Hash.HashUpperBound;
-            var result = (int)(lowerHash + (offset * upperHash)) % _filterBits.Count;
+            //var mm3Hash = new Murmur3_x64((uint)offset);
+            //mm3Hash.ComputeHash(item);
+            //var lowerHash = (long)mm3Hash.HashLowerBound;
+            //var upperHash = (long)mm3Hash.HashUpperBound;
+
+			var hash = Murmurhash32.MurmurHash3_x86_32 (item, (uint)offset);
+
+            var result = (int)(hash + (offset * hash)) % _filterBits.Size;
 
             return Math.Abs(result);
         }
 
         public byte[] GetBloomFilterBytes()
         {
-            var bytes = new byte[this._filterBits.Length];
-            this._filterBits.CopyTo(bytes, 0);
-            return bytes;
+            return this._filterBits.GetBytes();
         }
 
         #region Bloom Filter Tuning
