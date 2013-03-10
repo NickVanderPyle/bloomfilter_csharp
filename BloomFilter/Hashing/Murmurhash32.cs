@@ -4,6 +4,7 @@ namespace BloomFilter
 {
 	public static class Murmurhash32
 	{
+
 		unsafe public static UInt32 MurmurHash3_x86_32 (byte[] bytes, UInt32 seed)
 		{
 			
@@ -13,16 +14,16 @@ namespace BloomFilter
 			//----------
 			// body
 
-			fixed (byte* data = &bytes[0]) {
+			fixed (byte* data = bytes) {
 
 				int nblocks = bytes.Length / 4;
-				//UInt32 blocks = (UInt32)(data + nblocks * 4);
 			
 				UInt32 c1 = 0xcc9e2d51;
 				UInt32 c2 = 0x1b873593;
 
 				for (var i = -nblocks; i != 0; ++i) {
-					UInt32 k1 = data[i];
+					UInt32 k1 = *((UInt32*)data);
+					*data += sizeof(UInt32);
 				
 					k1 *= c1;
 					k1 = Rotl32 (k1, 15);
