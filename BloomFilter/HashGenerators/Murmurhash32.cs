@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashGenerators
 {
@@ -14,15 +15,14 @@ namespace BloomFilter.HashGenerators
 			// body
 
 			fixed (byte* data = bytes) {
-
+				UInt32* intPtr = (UInt32*)data;
 				int nblocks = bytes.Length / 4;
 			
 				const UInt32 c1 = 0xcc9e2d51;
 				const UInt32 c2 = 0x1b873593;
 
 				for (var i = -nblocks; i != 0; ++i) {
-					UInt32 k1 = *((UInt32*)data);
-					*data += sizeof(UInt32);
+					UInt32 k1 = *intPtr++;
 				
 					k1 *= c1;
 					k1 = Rotl32 (k1, 15);
@@ -67,11 +67,13 @@ namespace BloomFilter.HashGenerators
 			return h1;
 		} 
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt32 Rotl32 ( UInt32 x, byte r )
 		{
 			return (x << r) | (x >> (32 - r));
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt32 fmix32 ( UInt32 h )
 		{
 			h ^= h >> 16;

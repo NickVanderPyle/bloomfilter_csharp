@@ -1,13 +1,22 @@
-﻿//Borrowed from: http://blog.teamleadnet.com/2012/08/murmurhash3-ultra-fast-hash-algorithm.html
-
-using System;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashGenerators
 {
-	public class Murmurhash128 : IHashGenerator<Tuple<UInt64, UInt64>, UInt32>
+	public struct HashResult128{
+		public readonly UInt64 High;
+		public readonly UInt64 Low;
+
+		public HashResult128(UInt64 high, UInt64 low){
+			this.High = high;
+			this.Low = low;
+		}
+	}
+
+	public class Murmurhash128 : IHashGenerator<HashResult128, UInt32>
     {
 
-		unsafe public Tuple<UInt64, UInt64> GetHashCode (byte[] bytes, UInt32 seed)
+		unsafe public HashResult128 GetHashCode (byte[] bytes, UInt32 seed)
 		{
 			UInt64 h1 = seed;
 			UInt64 h2 = seed;
@@ -16,6 +25,7 @@ namespace BloomFilter.HashGenerators
 			//----------
 			// body
 			fixed (byte* data = bytes) {
+				UInt64* intPtr = (UInt64*)data;
 				Int64 nblocks = bytes.LongLength / 16;
 
 				const UInt64 c1 = 0x87c37b91114253d5;
@@ -23,11 +33,8 @@ namespace BloomFilter.HashGenerators
 
 				for (var i = -nblocks; i != 0; ++i)
 				{
-					UInt64 k1 = *((UInt64*)data);
-					*data += sizeof(UInt64);
-					UInt64 k2 = *((UInt64*)data);
-					*data += sizeof(UInt64);
-
+					UInt64 k1 = *intPtr++;
+					UInt64 k2 = *intPtr++;
 
 					k1 *= c1;
 					k1 = Rotl64 (k1, 31);
@@ -128,14 +135,16 @@ namespace BloomFilter.HashGenerators
 				h2 += h1;
 			}
 
-			return Tuple.Create(h1, h2);
+			return new HashResult128(h1, h2);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt64 Rotl64(UInt64 x, int r)
 		{
 			return (x << r) | (x >> (64 - r));
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt64 fmix64(UInt64 k)
 		{
 			// avalanche bits

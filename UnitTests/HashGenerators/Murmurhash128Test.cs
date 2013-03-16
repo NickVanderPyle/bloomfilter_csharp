@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace UnitTests.HashGenerators
 {
 	[TestFixture()]
-	public class MurmurHash32Test
+	public class MurmurHash128Test
 	{
 		[TestCase(0, 0)]
 		[TestCase(1, 1)]
@@ -50,7 +50,7 @@ namespace UnitTests.HashGenerators
 			var hashGenerator = MakeHashGenerator();
 			var leftResult = hashGenerator.GetHashCode (leftBytes, 1);
 			var rightResult = hashGenerator.GetHashCode (rightBytes, 1);
-
+			
 			Assert.AreEqual (leftResult, rightResult);
 		}
 
@@ -58,7 +58,7 @@ namespace UnitTests.HashGenerators
 		public void GetHash_GivenSameNumberButDifferentSeed_NeverHasHashCollision(int start, int end)
 		{
 			var hashGenerator = MakeHashGenerator();
-			var knownHashes = new List<uint>(Int16.MaxValue);
+			var knownHashes = new List<HashResult128>(Int16.MaxValue);
 
 			for(uint i = (uint)start; i < end; ++i){
 
@@ -74,7 +74,7 @@ namespace UnitTests.HashGenerators
 		public void GetHash_GivenRangeOfNumbers_NeverHasHashCollision(int start, int end)
 		{
 			var hashGenerator = MakeHashGenerator();
-			var knownHashes = new List<uint>(Int16.MaxValue);
+			var knownHashes = new List<HashResult128>(Int16.MaxValue);
 
 			for(var i = start; i < end; ++i){
 				Byte[] bytes = BitConverter.GetBytes (i);
@@ -86,9 +86,9 @@ namespace UnitTests.HashGenerators
 			}
 		}
 
-		public Murmurhash32 MakeHashGenerator()
+		public Murmurhash128 MakeHashGenerator()
 		{
-			return new Murmurhash32();
+			return new Murmurhash128();
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using BloomFilter.Hashing;
+using BloomFilter.HashGenerators;
 
 namespace BloomFilter
 {
@@ -58,7 +59,7 @@ namespace BloomFilter
             //var lowerHash = (long)mm3Hash.HashLowerBound;
             //var upperHash = (long)mm3Hash.HashUpperBound;
 
-			var hash = Murmurhash32.MurmurHash3_x86_32 (item, (uint)offset);
+			var hash = new Murmurhash32().GetHashCode(item, (uint)offset);
 
             var result = (int)(hash + (offset * hash)) % _filterBits.Size;
 
