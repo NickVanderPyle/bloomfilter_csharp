@@ -46,7 +46,6 @@
     <Compile Include="Filter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BitManipulation\BitArray2.cs" />
-    <Compile Include="HashGenerators\IntHelpers.cs" />
     <Compile Include="HashGenerators\Murmurhash32.cs" />
     <Compile Include="HashGenerators\IHashGenerator.cs" />
     <Compile Include="HashGenerators\Murmurhash128.cs" />

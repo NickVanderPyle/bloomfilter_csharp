@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using BloomFilter.Hashing;
 using BloomFilter.HashGenerators;
 
 namespace BloomFilter
