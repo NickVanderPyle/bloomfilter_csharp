@@ -3,13 +3,25 @@ using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashGenerators
 {
-	public struct HashResult128{
+	public struct HashResult128 : IEquatable<HashResult128> {
 		public readonly UInt64 High;
 		public readonly UInt64 Low;
 
 		public HashResult128(UInt64 high, UInt64 low){
 			this.High = high;
 			this.Low = low;
+		}
+		
+		#region IEquatable implementation
+		public bool Equals (HashResult128 other)
+		{
+			return this.High == other.High && this.Low == other.Low;
+		}
+		#endregion
+
+		public override int GetHashCode ()
+		{
+			return this.High.GetHashCode() ^ this.Low.GetHashCode();
 		}
 	}
 

@@ -54,11 +54,11 @@ namespace UnitTests.HashGenerators
 			Assert.AreEqual (leftResult, rightResult);
 		}
 
-		[TestCase(0, UInt16.MaxValue)]
+		[TestCase(0, 500000)]
 		public void GetHash_GivenSameNumberButDifferentSeed_NeverHasHashCollision(int start, int end)
 		{
 			var hashGenerator = MakeHashGenerator();
-			var knownHashes = new List<HashResult128>(Int16.MaxValue);
+			var knownHashes = new HashSet<HashResult128>();
 
 			for(uint i = (uint)start; i < end; ++i){
 
@@ -70,11 +70,11 @@ namespace UnitTests.HashGenerators
 			}
 		}
 
-		[TestCase(0, UInt16.MaxValue)]
+		[TestCase(0, 500000)]
 		public void GetHash_GivenRangeOfNumbers_NeverHasHashCollision(int start, int end)
 		{
 			var hashGenerator = MakeHashGenerator();
-			var knownHashes = new List<HashResult128>(Int16.MaxValue);
+			var knownHashes = new HashSet<HashResult128>();
 
 			for(var i = start; i < end; ++i){
 				Byte[] bytes = BitConverter.GetBytes (i);
