@@ -22,16 +22,16 @@ namespace BloomCli
 			if (!keyFile.Exists)
 				throw new FileNotFoundException ("Can't find " + keyFile.FullName);
 
-			Filter filter = null;
+			StandardBloomFilter filter = null;
 
 			var bloomfilterFile = new FileInfo (Path.Combine (pathInfo.FullName, "BloomFilterData.dat"));
 			if (bloomfilterFile.Exists) {
 
 				var fileBytes = File.ReadAllBytes (bloomfilterFile.FullName);
 
-				filter = new Filter (fileBytes, 0.05f, 5000000);
+				filter = new StandardBloomFilter (fileBytes, 0.05f, 5000000);
 			} else {
-				filter = new Filter (0.05f, 5000000);
+				filter = new StandardBloomFilter (0.05f, 5000000);
 				TrainFilter (filter, keyFile);
 				File.WriteAllBytes (bloomfilterFile.FullName, filter.GetBloomFilterBytes ());
 			}
@@ -44,7 +44,7 @@ namespace BloomCli
 			}
 		}
 
-		private static void TrainFilter (Filter filter, FileSystemInfo keyFile)
+		private static void TrainFilter (StandardBloomFilter filter, FileSystemInfo keyFile)
 		{
 			using (var reader = new StreamReader(keyFile.FullName)) {
 					var linecount = 0;

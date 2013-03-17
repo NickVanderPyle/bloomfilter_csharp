@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="HashGenerators\Murmurhash32Test.cs" />
     <Compile Include="HashGenerators\Murmurhash128Test.cs" />
+    <Compile Include="BloomFilterTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
