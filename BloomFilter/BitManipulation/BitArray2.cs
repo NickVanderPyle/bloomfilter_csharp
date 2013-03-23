@@ -2,19 +2,19 @@ using System;
 
 namespace BloomFilter
 {
-	public class BitArray2
+	public class BitArray2 : IFilterStorage
 	{
 		private const int bitsPerInt = sizeof(uint) * 8;
 		private const uint oneBit = 1;
 
 		private readonly uint[] bitArray;
-		public readonly int Size;
+		private readonly int _size;
 		
 		public BitArray2(int size)
 		{
 			int dataSize = size / bitsPerInt + 1;
 			this.bitArray = new uint[dataSize];
-			this.Size = size;
+			this._size = size;
 		}
 
 		public BitArray2(byte[] bytes)
@@ -23,24 +23,26 @@ namespace BloomFilter
 			this.bitArray = new uint[uintFileSize];
 			Buffer.BlockCopy(bytes, 0, bitArray, 0, bytes.Length);
 
-			this.Size = this.bitArray.Length * bitsPerInt;
+			this._size = this.bitArray.Length * bitsPerInt;
 		}
-		
-		public bool this[int bitIndex]
+
+		#region IFilterStorage implementation
+		public bool this[UInt32 bitIndex]
 		{
 			set
 			{
 				var idx = bitIndex / bitsPerInt;
-				var shiftCount = idx % bitsPerInt;
-				if(value)
+				int shiftCount = (int)(idx % bitsPerInt);
+				if(value){
 					this.bitArray[idx] |= oneBit << shiftCount;
-				else
-					this.bitArray[idx] &= ~(oneBit << idx % shiftCount);
+				}else{
+					this.bitArray[idx] &= ~(oneBit << shiftCount);
+				}
 			}
 			get
 			{
 				var idx = bitIndex / bitsPerInt;
-				var shiftCount = idx % bitsPerInt;
+				var shiftCount = (int)(idx % bitsPerInt);
 				return (this.bitArray[idx] & (oneBit << shiftCount)) == 0;
 			}
 		}
@@ -51,6 +53,12 @@ namespace BloomFilter
 			return result;
 		}
 
+		public int Size {
+			get {
+				return this._size;
+			}
+		}
+		#endregion
 	}
 
 }

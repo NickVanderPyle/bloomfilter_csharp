@@ -4,43 +4,33 @@ using BloomFilter.HashGenerators;
 
 namespace BloomFilter
 {
-    public class StandardBloomFilter
+	public class StandardBloomFilter : IStandardBloomFilter
     {
         private readonly int _numberOfHashes;
-        private readonly BitArray2 _filterBits;
+		private readonly IFilterStorage _filterBits;
+		private readonly IHashGenerator<uint, uint> _hashGenerator;
 
-        public StandardBloomFilter(float falsePositiveRate, int estimatedNumberOfElements)
-        {
-            var optimalFilterSize = GetOptimalBloomFilterSize(estimatedNumberOfElements, falsePositiveRate);
-            _numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, optimalFilterSize);
-            Console.WriteLine("Optimal Filter Size: {0}/tOptimal Number Of Hashes: {1}", optimalFilterSize, _numberOfHashes);
-
-            _filterBits = new BitArray2(optimalFilterSize);
-        }
-
-        public StandardBloomFilter(byte[] existingBloomFilter, float falsePositiveRate, int estimatedNumberOfElements)
-        {
-            var optimalFilterSize = GetOptimalBloomFilterSize(estimatedNumberOfElements, falsePositiveRate);
-            _numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, optimalFilterSize);
-            Console.WriteLine("Optimal Filter Size: {0}/tOptimal Number Of Hashes: {1}", optimalFilterSize, _numberOfHashes);
-
-            _filterBits = new BitArray2(existingBloomFilter);
-        }
+		public StandardBloomFilter (int estimatedNumberOfElements, IHashGenerator<uint, uint> hashGenerator, IFilterStorage filterStorage)
+		{
+			this._filterBits = filterStorage;
+			this._hashGenerator = hashGenerator;
+			_numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, filterStorage.Size);
+		}
 
         public void Add(byte[] item)
         {
-            for (var i = 0; i < _numberOfHashes; ++i)
+            for (UInt32 i = 0; i < _numberOfHashes; ++i)
             {
-                var index = GetHashCode(item, i);
+				var index = _hashGenerator.GetHashCode(item, i);
                 _filterBits[index] = true;
             }
         }
 
         public bool Contains(byte[] item)
         {
-            for (var i = 0; i < _numberOfHashes; ++i)
+            for (UInt32 i = 0; i < _numberOfHashes; ++i)
             {
-                var index = GetHashCode(item, i);
+				var index = _hashGenerator.GetHashCode(item, i);
                 if (!_filterBits[index])
                 {
                     return false;
@@ -72,11 +62,6 @@ namespace BloomFilter
 
         #region Bloom Filter Tuning
         //Found in the book MapReduce Design Patterns
-
-        private static int GetOptimalBloomFilterSize(int numberOfElements, float falsePositiveRate)
-        {
-            return (int)(-numberOfElements * Math.Log(falsePositiveRate) / Math.Pow(Math.Log(2), 2));
-        }
 
         private static int GetOptimalNumberOfHashes(int numberOfElements, int filterSize)
         {

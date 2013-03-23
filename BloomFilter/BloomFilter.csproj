@@ -49,6 +49,9 @@
     <Compile Include="HashGenerators\IHashGenerator.cs" />
     <Compile Include="HashGenerators\Murmurhash128.cs" />
     <Compile Include="StandardBloomFilter.cs" />
+    <Compile Include="IStandardBloomFilter.cs" />
+    <Compile Include="BitManipulation\IFilterStorage.cs" />
+    <Compile Include="BitManipulation\FilterStorageFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

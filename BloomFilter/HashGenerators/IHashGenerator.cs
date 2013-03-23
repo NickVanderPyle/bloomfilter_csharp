@@ -1,6 +1,4 @@
-using System;
-
-namespace BloomFilter
+namespace BloomFilter.HashGenerators
 {
 	public interface IHashGenerator<THash, TSeed>
 	{

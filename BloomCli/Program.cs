@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using BloomFilter;
 using System.Xml;
+using BloomFilter.HashGenerators;
 
 namespace BloomCli
 {
@@ -29,9 +30,17 @@ namespace BloomCli
 
 				var fileBytes = File.ReadAllBytes (bloomfilterFile.FullName);
 
-				filter = new StandardBloomFilter (fileBytes, 0.05f, 5000000);
+				var estimatedSizeOfDataset = 5000000;
+				var filterStorage = FilterStorageFactory.CreateBitArrayFromBytes(fileBytes);
+				var hashGenerator = new Murmurhash32();
+				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
 			} else {
-				filter = new StandardBloomFilter (0.05f, 5000000);
+				var errorRate = 0.005f;
+				var estimatedSizeOfDataset = 5000000;
+				var filterStorage = FilterStorageFactory.CreateBitArray(errorRate, estimatedSizeOfDataset);
+				var hashGenerator = new Murmurhash32();
+				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
+
 				TrainFilter (filter, keyFile);
 				File.WriteAllBytes (bloomfilterFile.FullName, filter.GetBloomFilterBytes ());
 			}
