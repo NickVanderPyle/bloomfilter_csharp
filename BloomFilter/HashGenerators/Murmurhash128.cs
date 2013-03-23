@@ -99,7 +99,7 @@ namespace BloomFilter.HashGenerators
 						k2_tail *= c2;
 						k2_tail  = Rotl64(k2_tail, 33);
 						k2_tail *= c1;
-						k2_tail ^= k2_tail;
+						h2 ^= k2_tail;
 						goto  case 8;
 					case 8:
 						k1_tail ^= (UInt64)tail [7] << 56;
