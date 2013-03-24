@@ -1,4 +1,5 @@
-﻿using System;
+﻿//https://smhasher.googlecode.com/svn/trunk/MurmurHash3.cpp
+using System;
 using System.Runtime.CompilerServices;
 
 namespace BloomFilter.HashGenerators
