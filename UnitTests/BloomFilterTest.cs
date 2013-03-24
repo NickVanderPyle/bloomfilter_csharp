@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using BloomFilter;
 using BloomFilter.HashGenerators;
+using BloomFilter.Storage;
 
 namespace UnitTests
 {

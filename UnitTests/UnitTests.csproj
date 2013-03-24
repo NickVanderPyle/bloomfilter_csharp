@@ -39,6 +39,7 @@
     <Compile Include="HashGenerators\Murmurhash32Test.cs" />
     <Compile Include="HashGenerators\Murmurhash128Test.cs" />
     <Compile Include="BloomFilterTest.cs" />
+    <Compile Include="BitManipulation\BitArray2Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -52,5 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="HashGenerators\" />
+    <Folder Include="BitManipulation\" />
   </ItemGroup>
 </Project>

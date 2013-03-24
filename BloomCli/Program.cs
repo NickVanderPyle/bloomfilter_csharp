@@ -3,6 +3,7 @@ using System.IO;
 using BloomFilter;
 using System.Xml;
 using BloomFilter.HashGenerators;
+using BloomFilter.Storage;
 
 namespace BloomCli
 {
