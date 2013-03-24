@@ -37,3 +37,4 @@ TestResults/
 *.opensdf
 *.sdf
 *.userprefs
+test-results/

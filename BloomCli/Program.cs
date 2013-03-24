@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using BloomFilter;
 using System.Xml;
+using BloomFilter.HashGenerators;
+using BloomFilter.Storage;
 
 namespace BloomCli
 {
@@ -22,16 +24,24 @@ namespace BloomCli
 			if (!keyFile.Exists)
 				throw new FileNotFoundException ("Can't find " + keyFile.FullName);
 
-			Filter filter = null;
+			StandardBloomFilter filter = null;
 
 			var bloomfilterFile = new FileInfo (Path.Combine (pathInfo.FullName, "BloomFilterData.dat"));
 			if (bloomfilterFile.Exists) {
 
 				var fileBytes = File.ReadAllBytes (bloomfilterFile.FullName);
 
-				filter = new Filter (fileBytes, 0.05f, 5000000);
+				var estimatedSizeOfDataset = 5000000;
+				var filterStorage = FilterStorageFactory.CreateBitArrayFromBytes(fileBytes);
+				var hashGenerator = new Murmurhash32();
+				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
 			} else {
-				filter = new Filter (0.05f, 5000000);
+				var errorRate = 0.005f;
+				var estimatedSizeOfDataset = 5000000;
+				var filterStorage = FilterStorageFactory.CreateBitArray(errorRate, estimatedSizeOfDataset);
+				var hashGenerator = new Murmurhash32();
+				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
+
 				TrainFilter (filter, keyFile);
 				File.WriteAllBytes (bloomfilterFile.FullName, filter.GetBloomFilterBytes ());
 			}
@@ -44,7 +54,7 @@ namespace BloomCli
 			}
 		}
 
-		private static void TrainFilter (Filter filter, FileSystemInfo keyFile)
+		private static void TrainFilter (StandardBloomFilter filter, FileSystemInfo keyFile)
 		{
 			using (var reader = new StreamReader(keyFile.FullName)) {
 					var linecount = 0;

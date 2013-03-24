@@ -1,28 +1,29 @@
+//https://smhasher.googlecode.com/svn/trunk/MurmurHash3.cpp
 using System;
+using System.Runtime.CompilerServices;
 
-namespace BloomFilter
+namespace BloomFilter.HashGenerators
 {
-	public static class Murmurhash32
+	public class Murmurhash32 : IHashGenerator<UInt32, UInt32>
 	{
-		unsafe public static UInt32 MurmurHash3_x86_32 (byte[] bytes, UInt32 seed)
+
+		unsafe public UInt32 GetHashCode (byte[] bytes, UInt32 seed)
 		{
-			
 			UInt32 h1 = seed;
 			
 			
 			//----------
 			// body
 
-			fixed (byte* data = &bytes[0]) {
-
+			fixed (byte* data = bytes) {
+				UInt32* intPtr = (UInt32*)data;
 				int nblocks = bytes.Length / 4;
-				//UInt32 blocks = (UInt32)(data + nblocks * 4);
 			
-				UInt32 c1 = 0xcc9e2d51;
-				UInt32 c2 = 0x1b873593;
+				const UInt32 c1 = 0xcc9e2d51;
+				const UInt32 c2 = 0x1b873593;
 
 				for (var i = -nblocks; i != 0; ++i) {
-					UInt32 k1 = data[i];
+					UInt32 k1 = *intPtr++;
 				
 					k1 *= c1;
 					k1 = Rotl32 (k1, 15);
@@ -67,11 +68,13 @@ namespace BloomFilter
 			return h1;
 		} 
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt32 Rotl32 ( UInt32 x, byte r )
 		{
 			return (x << r) | (x >> (32 - r));
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static UInt32 fmix32 ( UInt32 h )
 		{
 			h ^= h >> 16;
