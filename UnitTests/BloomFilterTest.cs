@@ -22,6 +22,19 @@ namespace UnitTests
 			Assert.IsTrue(filter.Contains(item));
 		}
 
+		[TestCase(new byte[]{0}, new byte[]{1})]
+		[TestCase(new byte[]{1}, new byte[]{99, 255, 30, 10})]
+		[TestCase(new byte[]{99, 255, 30, 10}, new byte[]{99, 255, 30, 10, 99, 255, 30, 10, 99, 255, 30, 10})]
+		[TestCase(new byte[]{99, 255, 30, 10, 99, 255, 30, 10, 99, 255, 30, 10}, new byte[]{0})]
+		public void Filter_GivenOneItem_DefinitelyDoNotContainAnotherItem(byte[] itemToContain, byte[] itemNotToContain)
+		{
+			var filter = MakeBloomFilter();
+			
+			filter.Add(itemToContain);
+			
+			Assert.IsFalse(filter.Contains(itemNotToContain));
+		}
+
 		public IStandardBloomFilter MakeBloomFilter()
 		{
 			var errorRate = 0.005f;

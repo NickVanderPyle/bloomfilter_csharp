@@ -1,6 +1,6 @@
 using System;
 
-namespace BloomFilter
+namespace BloomFilter.Storage
 {
 	public interface IFilterStorage
 	{
