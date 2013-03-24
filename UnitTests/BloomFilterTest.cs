@@ -8,7 +8,7 @@ namespace UnitTests
 	[TestFixture()]
 	public class BloomFilterTest
 	{
-		[TestCase(0, 0)]
+		[TestCase()]
 		public void Filter_GivenItems_ProbablyContainsItems()
 		{
 			var filter = MakeBloomFilter();

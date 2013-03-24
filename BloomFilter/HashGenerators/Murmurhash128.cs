@@ -78,16 +78,16 @@ namespace BloomFilter.HashGenerators
 
 				switch (bytes.Length & 15) {
 					case 15:
-						k2_tail ^= (UInt64)tail [10] << 48;
+						k2_tail ^= (UInt64)tail [14] << 48;
 						goto  case 14;
 					case 14:
-						k2_tail ^= (UInt64)tail [10] << 40;
+						k2_tail ^= (UInt64)tail [13] << 40;
 						goto  case 13;
 					case 13:
-						k2_tail ^= (UInt64)tail [10] << 32;
+						k2_tail ^= (UInt64)tail [12] << 32;
 						goto  case 12;
 					case 12:
-						k2_tail ^= (UInt64)tail [10] << 24;
+						k2_tail ^= (UInt64)tail [11] << 24;
 						goto  case 11;
 					case 11:
 						k2_tail ^= (UInt64)tail [10] << 16;

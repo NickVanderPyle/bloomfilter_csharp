@@ -86,6 +86,21 @@ namespace UnitTests.HashGenerators
 			}
 		}
 
+		/*
+		 * ExpectedValue is determined by running the MurmurHash from smhasher source
+		 */
+		[TestCase(0U, new byte[]{0}, 1364076727U)]
+		[TestCase(1U, new byte[] {1}, 693974893U)]
+		[TestCase(999U, new byte[]{123,44,90,7, 33,250,200,1, 123,44,90,7, 33,250,200,1, 122,43,89}, 3990807192U)] //tests all of the tail switches
+		public void GetHash_GivenANumber_ReturnsResultsFromOriginalGoogleSource(UInt32 seed, byte[] key, UInt32 expectedValue)
+		{
+			var hashGenerator = MakeHashGenerator();
+
+			var result = hashGenerator.GetHashCode (key, seed);
+			
+			Assert.AreEqual(expectedValue, result);
+		}
+
 		public Murmurhash32 MakeHashGenerator()
 		{
 			return new Murmurhash32();
