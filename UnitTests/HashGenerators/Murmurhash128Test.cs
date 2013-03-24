@@ -86,6 +86,27 @@ namespace UnitTests.HashGenerators
 			}
 		}
 
+		[TestCase((UInt32)0, 14961230494313510588UL, 6383328099726337777UL)]
+		[TestCase((UInt32)1, 5826198776959929748UL, 14360972042172078551UL)]
+		[TestCase((UInt32)2, 13201455739478309879UL, 10921120723441872451UL)]
+		[TestCase((UInt32)3, 18366858537736155884UL, 7450049429292945930UL)]
+		[TestCase((UInt32)4, 6586930805225301676UL, 657024170983176706UL)]
+		[TestCase((UInt32)5, 4214690439090310392UL, 15019709049338469220UL)]
+		[TestCase((UInt32)6, 935305596065085843UL, 14600062569458789341UL)]
+		[TestCase((UInt32)7, 19557564279890700UL, 12510223899898939502UL)]
+		[TestCase((UInt32)8, 4345163627233164986UL, 3058993175989101499UL)]
+		[TestCase((UInt32)9, 10852845770834771179UL, 15050809330892509503UL)]
+		public void GetHash_GivenANumber_ReturnsResultsFromOriginalGoogleSource(UInt32 keyAndSeed, UInt64 high, UInt64 low)
+		{
+			var hashGenerator = MakeHashGenerator();
+			
+				Byte[] bytes = BitConverter.GetBytes (keyAndSeed);
+				var result = hashGenerator.GetHashCode (bytes, keyAndSeed);
+				
+			Assert.AreEqual(high, result.High);
+			Assert.AreEqual(low, result.Low);
+		}
+
 		public Murmurhash128 MakeHashGenerator()
 		{
 			return new Murmurhash128();
