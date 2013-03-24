@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using BloomFilter.HashGenerators;
 
 namespace BloomFilter
@@ -28,7 +27,7 @@ namespace BloomFilter
 
         public bool Contains(byte[] item)
         {
-            for (UInt32 i = 0; i < _numberOfHashes; ++i)
+			for (UInt32 i = 0; i < this._numberOfHashes; ++i)
             {
 				var index = this._hashGenerator.GetHashCode(item, i);
 				if (!this._filterBits[index])

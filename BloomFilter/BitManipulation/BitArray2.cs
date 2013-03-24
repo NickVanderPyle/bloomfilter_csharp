@@ -4,26 +4,26 @@ namespace BloomFilter
 {
 	public class BitArray2 : IFilterStorage
 	{
-		private const int bitsPerInt = sizeof(uint) * 8;
-		private const uint oneBit = 1;
+		private const int BitsPerInt = sizeof(uint) * 8;
+		private const uint OneBit = 1;
 
-		private readonly uint[] bitArray;
+		private readonly uint[] _bitArray;
 		private readonly int _size;
 		
 		public BitArray2(int size)
 		{
-			int dataSize = size / bitsPerInt + 1;
-			this.bitArray = new uint[dataSize];
+			int dataSize = size / BitsPerInt + 1;
+			this._bitArray = new uint[dataSize];
 			this._size = size;
 		}
 
 		public BitArray2(byte[] bytes)
 		{
 			var uintFileSize = bytes.Length / sizeof(uint);
-			this.bitArray = new uint[uintFileSize];
-			Buffer.BlockCopy(bytes, 0, bitArray, 0, bytes.Length);
+			this._bitArray = new uint[uintFileSize];
+			Buffer.BlockCopy(bytes, 0, this._bitArray, 0, bytes.Length);
 
-			this._size = this.bitArray.Length * bitsPerInt;
+			this._size = this._bitArray.Length * BitsPerInt;
 		}
 
 		#region IFilterStorage implementation
@@ -31,25 +31,25 @@ namespace BloomFilter
 		{
 			set
 			{
-				var idx = bitIndex / bitsPerInt;
-				int shiftCount = (int)(idx % bitsPerInt);
+				var idx = bitIndex / BitsPerInt;
+				int shiftCount = (int)(idx % BitsPerInt);
 				if(value){
-					this.bitArray[idx] |= oneBit << shiftCount;
+					this._bitArray[idx] |= OneBit << shiftCount;
 				}else{
-					this.bitArray[idx] &= ~(oneBit << shiftCount);
+					this._bitArray[idx] &= ~(OneBit << shiftCount);
 				}
 			}
 			get
 			{
-				var idx = bitIndex / bitsPerInt;
-				var shiftCount = (int)(idx % bitsPerInt);
-				return (this.bitArray[idx] & (oneBit << shiftCount)) == 0;
+				var idx = bitIndex / BitsPerInt;
+				var shiftCount = (int)(idx % BitsPerInt);
+				return (this._bitArray[idx] & (OneBit << shiftCount)) == 0;
 			}
 		}
 
 		public byte[] GetBytes(){
-			byte[] result = new byte[this.bitArray.Length * sizeof(uint)];
-			Buffer.BlockCopy(this.bitArray, 0, result, 0, result.Length);
+			byte[] result = new byte[this._bitArray.Length * sizeof(uint)];
+			Buffer.BlockCopy(this._bitArray, 0, result, 0, result.Length);
 			return result;
 		}
 
