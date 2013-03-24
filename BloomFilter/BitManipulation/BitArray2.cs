@@ -32,7 +32,7 @@ namespace BloomFilter
 			set
 			{
 				var idx = bitIndex / BitsPerInt;
-				int shiftCount = (int)(idx % BitsPerInt);
+				int shiftCount = (int)(bitIndex % BitsPerInt);
 				if(value){
 					this._bitArray[idx] |= OneBit << shiftCount;
 				}else{
@@ -42,8 +42,8 @@ namespace BloomFilter
 			get
 			{
 				var idx = bitIndex / BitsPerInt;
-				var shiftCount = (int)(idx % BitsPerInt);
-				return (this._bitArray[idx] & (OneBit << shiftCount)) == 0;
+				var shiftCount = (int)(bitIndex % BitsPerInt);
+				return (this._bitArray[idx] & (OneBit << shiftCount)) != 0;
 			}
 		}
 

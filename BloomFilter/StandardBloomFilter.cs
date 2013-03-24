@@ -20,7 +20,8 @@ namespace BloomFilter
         {
 			for (UInt32 i = 0; i < this._numberOfHashes; ++i)
             {
-				var index = this._hashGenerator.GetHashCode(item, i);
+				var hash = this._hashGenerator.GetHashCode(item, i);
+				var index = (UInt32)(hash % this._filterBits.Size);
 				this._filterBits[index] = true;
             }
         }
@@ -29,7 +30,8 @@ namespace BloomFilter
         {
 			for (UInt32 i = 0; i < this._numberOfHashes; ++i)
             {
-				var index = this._hashGenerator.GetHashCode(item, i);
+				var hash = this._hashGenerator.GetHashCode(item, i);
+				var index = (UInt32)(hash % this._filterBits.Size);
 				if (!this._filterBits[index])
                 {
                     return false;

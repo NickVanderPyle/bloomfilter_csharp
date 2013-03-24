@@ -8,16 +8,23 @@ namespace UnitTests
 	[TestFixture()]
 	public class BloomFilterTest
 	{
-		[TestCase()]
-		public void Filter_GivenItems_ProbablyContainsItems()
+		[TestCase(new byte[]{0})]
+		[TestCase(new byte[]{1})]
+		[TestCase(new byte[]{99, 255, 30, 10})]
+		[TestCase(new byte[]{99, 255, 30, 10, 99, 255, 30, 10, 99, 255, 30, 10})]
+		public void Filter_GivenItems_ProbablyContainsItems(byte[] item)
 		{
 			var filter = MakeBloomFilter();
+
+			filter.Add(item);
+
+			Assert.IsTrue(filter.Contains(item));
 		}
 
 		public IStandardBloomFilter MakeBloomFilter()
 		{
 			var errorRate = 0.005f;
-			var estimatedSizeOfDataset = 5000000;
+			var estimatedSizeOfDataset = 10;
 
 			var filterStorage = FilterStorageFactory.CreateBitArray(errorRate, estimatedSizeOfDataset);
 
