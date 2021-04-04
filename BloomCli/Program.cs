@@ -7,71 +7,147 @@ using BloomFilter.Storage;
 
 namespace BloomCli
 {
-	class Program
-	{
-		private const int HashSize = 51200000;
+    class Program
+    {
+        private const int HashSize = 51200000;
 
-		static void Main (string[] args)
-		{
-			if (args == null || args.Length < 2)
-				return;
+        static void Main(string[] args)
+        {
 
-			var pathInfo = new DirectoryInfo (args [0]);
-			if (!pathInfo.Exists)
-				throw new DirectoryNotFoundException ("Can't find " + pathInfo.FullName);
+            var opts = new Options();
+            var result = CommandLine.Parser.Default.ParseArguments(args, opts);
+            if (!result)
+            {
+                Environment.Exit(1);
+            }
+            if (opts.Mode == Options.ModeEnum.Train && !opts.MergeBloomFilter && File.Exists(opts.BloomFilterFile))
+            {
+                File.Delete(opts.BloomFilterFile);
+            }
 
-			var keyFile = new FileInfo (Path.Combine (pathInfo.FullName, args [1]));
-			if (!keyFile.Exists)
-				throw new FileNotFoundException ("Can't find " + keyFile.FullName);
+            var bloomFilter = LoadBloomFilter(opts);
 
-			StandardBloomFilter filter = null;
+            //Train the filter
+            if (opts.Mode == Options.ModeEnum.Train)
+            {
+                TrainFilter(opts, bloomFilter);
+                File.WriteAllBytes(opts.BloomFilterFile, bloomFilter.GetBloomFilterBytes());
+            }
 
-			var bloomfilterFile = new FileInfo (Path.Combine (pathInfo.FullName, "BloomFilterData.dat"));
-			if (bloomfilterFile.Exists) {
+            //Test the filter
+            if (opts.Mode == Options.ModeEnum.Test)
+            {
+                TestFilter(opts, bloomFilter);
+            }
 
-				var fileBytes = File.ReadAllBytes (bloomfilterFile.FullName);
 
-				var estimatedSizeOfDataset = 5000000;
-				var filterStorage = FilterStorageFactory.CreateBitArrayFromBytes(fileBytes);
-				var hashGenerator = new Murmurhash32();
-				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
-			} else {
-				var errorRate = 0.005f;
-				var estimatedSizeOfDataset = 5000000;
-				var filterStorage = FilterStorageFactory.CreateBitArray(errorRate, estimatedSizeOfDataset);
-				var hashGenerator = new Murmurhash32();
-				filter = new StandardBloomFilter(estimatedSizeOfDataset, hashGenerator, filterStorage);
+        }
 
-				TrainFilter (filter, keyFile);
-				File.WriteAllBytes (bloomfilterFile.FullName, filter.GetBloomFilterBytes ());
-			}
+        private static StandardBloomFilter LoadBloomFilter(Options opts)
+        {
+            //Load Filter
+            var bloomfilterFile = new FileInfo(opts.BloomFilterFile);
+            StandardBloomFilter filter = null;
+            var hashGenerator = new Murmurhash32();
+            var numItems = opts.EstimatedNumberOfItems;
+            var falsePositiveRate = opts.FalsePositiveRate;
+            if (bloomfilterFile.Exists)
+            {
+                var fileBytes = File.ReadAllBytes(bloomfilterFile.FullName);
+                var filterStorage = FilterStorageFactory.CreateBitArrayFromBytes(fileBytes, falsePositiveRate, numItems);
+                filter = new StandardBloomFilter(numItems, hashGenerator, filterStorage);
+            }
+            else
+            {
+                var filterStorage = FilterStorageFactory.CreateBitArray(falsePositiveRate, numItems);
+                filter = new StandardBloomFilter(numItems, hashGenerator, filterStorage);
+            }
+            return filter;
+        }
 
-			string stringToTest = null;
-			while (!string.IsNullOrWhiteSpace(stringToTest = Console.ReadLine())) {
-				var stringInBytes = System.Text.Encoding.Default.GetBytes (stringToTest);
-				var hasString = filter.Contains (stringInBytes);
-				Console.WriteLine ("Known Word: " + hasString.ToString ());
-			}
-		}
+        private static void TrainFilter(Options opts, StandardBloomFilter filter)
+        {
+            if (!String.IsNullOrEmpty(opts.InputFile))
+            {
+                //Train from file   
+                var keyFile = new FileInfo(opts.InputFile);
+                if (!keyFile.Exists)
+                    throw new FileNotFoundException("Can't find " + keyFile.FullName);
+                using (var reader = new StreamReader(keyFile.FullName))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.Length == 0) continue;
+                        AddItem(filter, line);
+                    }
+                }
+            }
+            else
+            {
+                //Train from STDIN
+                string item;
+                while ((item = Console.ReadLine()) != null)
+                {
+                    AddItem(filter, item);
+                }
+            }
+        }
 
-		private static void TrainFilter (StandardBloomFilter filter, FileSystemInfo keyFile)
-		{
-			using (var reader = new StreamReader(keyFile.FullName)) {
-					var linecount = 0;
-					string line;
-					while ((line = reader.ReadLine()) != null) {
-						if (line.Length == 0) continue;
+        private static void AddItem(IStandardBloomFilter filter, string line)
+        {
+            var stringInBytes = System.Text.Encoding.Default.GetBytes(line);
+            filter.Add(stringInBytes);
+        }
+        
 
-						++linecount;
-						if (linecount % 10 == 0){
-							Console.SetCursorPosition (0, 0);
-							Console.WriteLine ("Reading key file: " + (reader.BaseStream.Position * 100 / reader.BaseStream.Length) + "%");
-						}
+        private static void TestFilter(Options opts, IStandardBloomFilter filter)
+        {
+            var itemsTested = 0;
+            var itemsFound = 0;
+            string item;
+            if (!String.IsNullOrEmpty(opts.InputFile))
+            {
+                //Train from file   
+                var keyFile = new FileInfo(opts.InputFile);
+                if (!keyFile.Exists)
+                    throw new FileNotFoundException("Can't find " + keyFile.FullName);
+                using (var reader = new StreamReader(keyFile.FullName))
+                {
+                    while ((item = reader.ReadLine()) != null)
+                    {
+                        if (item.Length == 0) continue;
+                        itemsTested ++;
+                        if (TestItem(filter, item))
+                        {
+                            itemsFound ++;
+                            Console.WriteLine(item);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //Train from STDIN
+                while ((item = Console.ReadLine()) != null)
+                {
+                    itemsTested ++;
+                    if (TestItem(filter, item))
+                    {
+                        itemsFound++;
+                        Console.WriteLine(item);
+                    }
+                }
+            }
+            Console.WriteLine("Items Tested: {0}\nItems Found:{1}", itemsTested, itemsFound);
+        }
 
-						var stringInBytes = System.Text.Encoding.Default.GetBytes (line);
-						filter.Add (stringInBytes);
-					}
-				}
-			}
-		}
+        private static Boolean TestItem(IStandardBloomFilter filter, string line)
+        {
+            var stringInBytes = System.Text.Encoding.Default.GetBytes(line);
+            return filter.Contains(stringInBytes);
+        }
+
+    }
+
 }

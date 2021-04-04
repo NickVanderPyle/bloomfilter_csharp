@@ -14,7 +14,7 @@ namespace BloomFilter
 		{
 			this._filterBits = filterStorage;
 			this._hashGenerator = hashGenerator;
-			this._numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, filterStorage.Size);
+		    this._numberOfHashes = GetOptimalNumberOfHashes(estimatedNumberOfElements, filterStorage.Size);
 		}
 
         public void Add(byte[] item)
@@ -52,7 +52,8 @@ namespace BloomFilter
 
         private static int GetOptimalNumberOfHashes(int numberOfElements, int filterSize)
         {
-            return (int)Math.Round(filterSize * Math.Log(2) / numberOfElements);
+           
+            return (int)Math.Round(filterSize * Math.Log(2, Math.E) / numberOfElements);
         }
 
         #endregion
